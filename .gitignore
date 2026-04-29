@@ -1,0 +1,36 @@
+# Data — never commit raw datasets
+data/*
+!data/.gitkeep
+!data/README.md
+
+# Outputs — keep folder structure, ignore content
+outputs/*
+!outputs/.gitkeep
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+.pytest_cache/
+.coverage
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+.DS_Store
+
+# Claude Code local state
+.claude/projects/
+.claude/sessions/
+
+# Secrets
+.env
+.env.local
+*.pem
+*.key
+
+# Notebooks
+.ipynb_checkpoints/
