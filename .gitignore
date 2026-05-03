@@ -27,6 +27,8 @@ venv/
 # Claude Code local state
 .claude/projects/
 .claude/sessions/
+.agents/
+.codex/
 
 # Secrets
 .env
