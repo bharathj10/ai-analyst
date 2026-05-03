@@ -67,6 +67,32 @@ ai-analyst/
    - Run `/profile data/your_file.csv` to get a quick health-check
    - Run `/analyse data/your_file.csv "what's driving X"` for full orchestration
 
+## Running multiple analyses
+
+If you need three different analyses, run them as separate, clearly named questions. This keeps the plan, scripts, charts, and reports easier to review and rerun.
+
+Example:
+
+```text
+/analyse data/member_snapshot.csv "Analyse salary sacrifice participation by age band"
+/analyse data/member_snapshot.csv "Analyse the gender gap in balances and contributions"
+/analyse data/member_snapshot.csv "Analyse drivers of member exits by tenure and age"
+```
+
+For each analysis:
+
+- Start with `/profile` when using a new dataset
+- State the dataset, question, time period, and target audience
+- Ask for a distinct output name, such as `2026-05-03_salary_sacrifice`
+- Keep outputs in `outputs/` and charts in `outputs/charts/`
+- Compare results only after all three analyses have their own sourced findings
+
+If the three analyses need to be compared in one executive pack, run the three analyses first, then ask:
+
+```text
+Combine the three completed analyses into one board-ready summary, with shared caveats and a prioritised action plan.
+```
+
 ## Data and outputs
 
 The repository intentionally does not include raw datasets, processed datasets, generated reports, or charts. Those folders are gitignored because superannuation member data can contain sensitive information.

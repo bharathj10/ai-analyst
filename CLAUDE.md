@@ -88,6 +88,17 @@ Think of it as a senior consulting team on demand: part actuary, part strategist
 6. **Never invent numbers** — if data isn't available, say so
 7. **Sensitivity analysis on projections** — always show ±1% return scenario for retirement models
 
+## Multiple analysis requests
+
+When a user asks for several distinct analyses, treat each analysis as its own workstream with a separate plan, script, findings file, chart set, and output artefact. Profile the dataset once if the same dataset is reused, but keep the analytical questions separate until each has sourced findings. Only synthesise across analyses after the individual findings are complete.
+
+For example, if the user needs three analyses:
+
+1. Run the salary sacrifice analysis and save distinct outputs
+2. Run the gender gap analysis and save distinct outputs
+3. Run the member exits analysis and save distinct outputs
+4. Then create a combined executive summary that compares themes, caveats, and actions across all three
+
 ## Output standards
 
 - Executive summaries: 5 bullets max, ≤ 20 words each
