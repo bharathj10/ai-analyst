@@ -1,5 +1,22 @@
 # AI Analyst Project
 
+<<<<<<< Updated upstream
+=======
+## Context and audience — read this first
+
+**Who is using this system:** Lead Analytics & Insights at an Australian superannuation fund. Outputs go to trustees, board members, and executives — people who make decisions affecting millions of members' retirement savings. They are time-poor, numbers-literate, and hold fiduciary responsibilities under the SIS Act.
+
+**What good output looks like:** A senior McKinsey consultant wrote it. The answer is on the first page. Numbers are specific and sourced. Charts have conclusion-first titles. Regulatory observations name the specific standard and defer to the trustee. Nothing is vague.
+
+**What bad output looks like:** Vague ("performance was below average"), unsourced ("industry benchmarks suggest"), or overconfident ("the fund must..."). If output could embarrass the fund in front of APRA or the board, it's not good enough.
+
+**Primary output format:** Interactive HTML — a standalone `.html` file executives open in a browser to explore data themselves. PPTX for presentations. Word for formal reports that get annotated. All three for any significant analysis.
+
+**Locale:** Australian English (analyse, organisation, behaviour). Currency: AUD. Dates: DD/MM/YYYY.
+
+---
+
+>>>>>>> Stashed changes
 ## About this project
 
 A world-class AI-powered analytics workspace specialising in Australian superannuation and financial services. Uses an orchestrator agent that plans, delegates to specialist subagents, and synthesises findings into executive-ready outputs — from raw member data to board-ready reports.
@@ -8,8 +25,7 @@ Think of it as a senior consulting team on demand: part actuary, part strategist
 
 ## About the user
 
-- **Bharath** — Lead Analytics & Insights at a superannuation firm, Melbourne
-- Also runs **Food Tie** (ecommerce — lunchware, expanding to kitchen products)
+- Lead Analytics & Insights at a superannuation firm, Melbourne
 - Primary audience for outputs: trustees, executives, and board members
 - Secondary audience: operational teams and regulators
 

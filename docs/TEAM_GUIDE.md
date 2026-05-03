@@ -32,10 +32,13 @@ claude                       # launch Claude Code
 
 ### Step 3 — Collect your outputs
 Everything lands in `outputs/` with today's date prefix:
-- `YYYY-MM-DD_<topic>.md` — the written report
-- `YYYY-MM-DD_<topic>_deck.pptx` — the slide deck
-- `YYYY-MM-DD_<topic>_report.docx` — the Word document
+- `YYYY-MM-DD_<topic>_interactive.html` — **share this one** — standalone interactive report
+- `YYYY-MM-DD_<topic>_deck.pptx` — the slide deck (for presentations)
+- `YYYY-MM-DD_<topic>_report.docx` — the Word document (for formal reports)
+- `YYYY-MM-DD_<topic>.md` — the written findings (internal record)
 - `outputs/charts/` — all charts as PNGs
+
+The `.html` file is a single standalone file — email it, drop it in SharePoint or Teams. No server, no login, works offline in any browser.
 
 ---
 
@@ -176,14 +179,17 @@ Common schemas in a super fund context:
 
 ## Output formats explained
 
-### Markdown report (`.md`)
-The primary analytical output. Contains executive summary, numbered findings with charts embedded, regulatory flags, recommendations, caveats, and appendix. Readable in any text editor, GitHub, or VS Code. Best for: internal sharing, source document.
+### Interactive HTML report (`_interactive.html`) — primary shareable format
+Standalone file, no dependencies, works in any browser offline. Contains KPI summary cards, interactive Plotly charts (hover, zoom, filter), a data quality summary (schema, null rates, distributions), and a full sortable/filterable data table at the bottom. **This is what you email to executives.** Built from `scripts/build_html.py`.
 
 ### PowerPoint deck (`.pptx`)
 Consultant-quality slide deck. Contains: cover, executive summary, one slide per major finding (chart + key insight panel), action cards, caveats, back cover. Built from `scripts/build_deck.py`. Best for: board meetings, presentations, anything you'll project.
 
 ### Word report (`.docx`)
 Formal document with running headers/footers, KPI strips, premium table styles, callout boxes, and appendix. Built from `scripts/build_report.py`. Best for: formal reports, documents that will be annotated or redlined, regulatory submissions.
+
+### Markdown report (`.md`)
+Narrative findings document. Contains executive summary, numbered findings, charts, regulatory flags, recommendations, and appendix. Best for: internal sharing, source record, GitHub.
 
 ### Findings JSON (`_findings.json`)
 Machine-readable results file used by downstream agents. Contains all statistics, confidence intervals, benchmarks, and flags. Best for: reusing findings in further analysis, building further prompts on top of.
