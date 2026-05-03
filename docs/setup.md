@@ -3,7 +3,7 @@
 **Author:** Bharath
 **Created:** April 2026
 **Last updated:** April 2026
-**Purpose:** Step-by-step record of how I set up my first Claude Code project (`ai-analyst`) so I can repeat this for future projects without re-figuring it out.
+**Purpose:** Step-by-step record of how to set up a Claude Code project (`ai-analyst`) so it can be repeated for future projects without re-figuring it out.
 
 ---
 
@@ -116,7 +116,7 @@ It shows a one-time code, opens your browser, you paste the code in. Done.
 ### Set Git identity
 
 ```bash
-git config --global user.name "Bharath"
+git config --global user.name "Your Name"
 git config --global user.email "your-github-email@example.com"
 ```
 

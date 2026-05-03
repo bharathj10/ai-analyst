@@ -169,7 +169,7 @@ def cover_page(doc):
     para3.paragraph_format.space_before = Pt(12)
     para3.paragraph_format.space_after = Pt(4)
     add_run(para3, "Prepared by:  ", bold=True, colour=DGREY, size=11)
-    add_run(para3, "Bharath  |  Lead Analytics & Insights", colour=DGREY, size=11)
+    add_run(para3, "Analytics & Insights Team", colour=DGREY, size=11)
 
     para4 = doc.add_paragraph()
     para4.paragraph_format.space_after = Pt(4)
@@ -599,7 +599,7 @@ def section_conclusion(doc):
 
     doc.add_paragraph()
     body(doc,
-        "Questions or feedback: reach out to Bharath (Analytics & Insights). "
+        "Questions or feedback: contact your Analytics & Insights team. "
         "The system is running in the ai-analyst project and can be demonstrated live.",
         italic=True, colour=DGREY, size=10
     )

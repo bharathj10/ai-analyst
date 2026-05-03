@@ -657,7 +657,7 @@ def build_salary_sacrifice_deck() -> None:
         organisation="Analytics & Insights",
         prepared_by="Bharath",
         prepared_date="29 April 2026",
-        contact="Reach out to Bharath (Analytics & Insights) for questions or to run further analysis.",
+        contact="Contact your Analytics & Insights team for questions or to run further analysis.",
         source_note="Source: super_members_2026Q1.csv  |  n=5,000 members  |  Snapshot: 31 March 2026  |  Analytics & Insights",
 
         exec_summary_bullets=[

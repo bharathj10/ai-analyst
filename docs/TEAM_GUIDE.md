@@ -328,7 +328,7 @@ What to do with $1 and $2...
 
 ## Getting help
 
-- **Questions about the system:** Ask Bharath (Analytics & Insights)
+- **Questions about the system:** Contact your Analytics & Insights team
 - **Bug reports / feature requests:** Raise in the team backlog
 - **Data access issues (Databricks):** Data Engineering team
 - **Regulatory interpretation:** Compliance team — the system flags, humans decide

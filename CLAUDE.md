@@ -22,7 +22,7 @@ Think of it as a senior consulting team on demand: part actuary, part strategist
 
 ## About the user
 
-- Lead Analytics & Insights at a superannuation firm, Melbourne
+- Analytics and Insights team at a regulated Australian financial services or superannuation organisation
 - Primary audience for outputs: trustees, executives, and board members
 - Secondary audience: operational teams and regulators
 
