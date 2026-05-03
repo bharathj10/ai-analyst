@@ -25,7 +25,6 @@ import sys
 from pathlib import Path
 
 import pandas as pd
-import requests
 
 OUTPUT_DIR = Path("data/reference")
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
@@ -155,6 +154,8 @@ def save_reference_csv(name: str, df: pd.DataFrame) -> Path:
 def fetch_apra_excel(url: str, sheet_name: str = None) -> pd.DataFrame | None:
     """Download an APRA Excel file and return a DataFrame."""
     try:
+        import requests
+
         print(f"  Downloading: {url}")
         resp = requests.get(url, timeout=30)
         resp.raise_for_status()
@@ -207,7 +208,13 @@ def build_asfa_table() -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
-def fetch_all(fetch_live: bool = True) -> dict:
+def fetch_all(
+    fetch_live: bool = True,
+    *,
+    include_static: bool = True,
+    include_quarterly: bool = True,
+    include_annual: bool = True,
+) -> dict:
     """
     Build the complete reference dataset.
     fetch_live=True: attempt to download latest APRA data.
@@ -216,43 +223,46 @@ def fetch_all(fetch_live: bool = True) -> dict:
     print("\n── APRA Reference Data Fetch ─────────────────────────────────")
     results = {}
 
-    print("\n[1] SG rate schedule")
-    df_sg = build_sg_rate_table()
-    results["sg_rates"] = save_reference_csv("sg_rate_schedule", df_sg)
+    if include_static:
+        print("\n[1] SG rate schedule")
+        df_sg = build_sg_rate_table()
+        results["sg_rates"] = save_reference_csv("sg_rate_schedule", df_sg)
 
-    print("\n[2] Contribution caps")
-    df_caps = build_contribution_caps_table()
-    results["contribution_caps"] = save_reference_csv("contribution_caps", df_caps)
+        print("\n[2] Contribution caps")
+        df_caps = build_contribution_caps_table()
+        results["contribution_caps"] = save_reference_csv("contribution_caps", df_caps)
 
-    print("\n[3] APRA benchmarks (hardcoded current values)")
-    results["apra_benchmarks"] = save_reference_json("apra_benchmarks", APRA_BENCHMARKS_2024)
+        print("\n[3] APRA benchmarks (hardcoded current values)")
+        results["apra_benchmarks"] = save_reference_json("apra_benchmarks", APRA_BENCHMARKS_2024)
 
-    print("\n[4] ASFA retirement standards history")
-    df_asfa = build_asfa_table()
-    results["asfa_standards"] = save_reference_csv("asfa_standards", df_asfa)
-    results["asfa_current"] = save_reference_json("asfa_current", ASFA_STANDARDS)
+        print("\n[4] ASFA retirement standards history")
+        df_asfa = build_asfa_table()
+        results["asfa_standards"] = save_reference_csv("asfa_standards", df_asfa)
+        results["asfa_current"] = save_reference_json("asfa_current", ASFA_STANDARDS)
 
-    print("\n[5] Transfer Balance Cap history")
-    results["tbc"] = save_reference_json("transfer_balance_cap", TRANSFER_BALANCE_CAP)
+        print("\n[5] Transfer Balance Cap history")
+        results["tbc"] = save_reference_json("transfer_balance_cap", TRANSFER_BALANCE_CAP)
 
     if fetch_live:
-        print("\n[6] Attempting live APRA quarterly statistics download...")
-        url = KNOWN_URLS.get("quarterly_summary")
-        if url:
-            df_qly = fetch_apra_excel(url)
-            if df_qly is not None:
-                results["quarterly_live"] = save_reference_csv("apra_quarterly_raw", df_qly)
-        else:
-            print("  No quarterly URL configured — skip.")
+        if include_quarterly:
+            print("\n[6] Attempting live APRA quarterly statistics download...")
+            url = KNOWN_URLS.get("quarterly_summary")
+            if url:
+                df_qly = fetch_apra_excel(url)
+                if df_qly is not None:
+                    results["quarterly_live"] = save_reference_csv("apra_quarterly_raw", df_qly)
+            else:
+                print("  No quarterly URL configured — skip.")
 
-        print("\n[7] Attempting live APRA annual AFLSS download...")
-        url = KNOWN_URLS.get("annual_aflss")
-        if url:
-            df_aflss = fetch_apra_excel(url)
-            if df_aflss is not None:
-                results["annual_live"] = save_reference_csv("apra_aflss_raw", df_aflss)
-        else:
-            print("  No AFLSS URL configured — skip.")
+        if include_annual:
+            print("\n[7] Attempting live APRA annual AFLSS download...")
+            url = KNOWN_URLS.get("annual_aflss")
+            if url:
+                df_aflss = fetch_apra_excel(url)
+                if df_aflss is not None:
+                    results["annual_live"] = save_reference_csv("apra_aflss_raw", df_aflss)
+            else:
+                print("  No AFLSS URL configured — skip.")
 
     print(f"\n── Complete. Files written to {OUTPUT_DIR}/ ──")
     return results
@@ -301,4 +311,10 @@ if __name__ == "__main__":
                         help="Fetch annual AFLSS only")
     args = parser.parse_args()
 
-    fetch_all(fetch_live=not args.offline)
+    specific_extract_requested = args.quarterly or args.annual
+    fetch_all(
+        fetch_live=not args.offline,
+        include_static=not specific_extract_requested,
+        include_quarterly=args.quarterly or not specific_extract_requested,
+        include_annual=args.annual or not specific_extract_requested,
+    )
