@@ -36,3 +36,4 @@ venv/
 
 # Notebooks
 .ipynb_checkpoints/
+docs/manager_update.md
