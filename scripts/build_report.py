@@ -41,7 +41,7 @@ class C:
     MGREY   = RGBColor(0xE5, 0xE8, 0xEC)
     WHITE   = RGBColor(0xFF, 0xFF, 0xFF)
     TEAL_BG = RGBColor(0xE5, 0xF5, 0xF6)
-    AMBER_BG = RGBColor(0xFDF3E0)
+    AMBER_BG = RGBColor(0xFD, 0xF3, 0xE0)
     POSITIVE = RGBColor(0x18, 0x7A, 0x4E)
     NEGATIVE = RGBColor(0xC0, 0x39, 0x2B)
 
@@ -51,7 +51,7 @@ FONT_HEAD = "Calibri"
 # ── XML helpers ───────────────────────────────────────────────────────────────
 
 def _hex(rgb: RGBColor) -> str:
-    return f"{rgb.rgb:06X}"
+    return f"{rgb[0]:02X}{rgb[1]:02X}{rgb[2]:02X}"
 
 
 def _set_cell_bg(cell, rgb: RGBColor):

@@ -1,7 +1,9 @@
-# Data — never commit raw datasets
+# Data — never commit raw datasets or credentials
 data/*
 !data/.gitkeep
 !data/README.md
+data/reference/
+data/processed/
 
 # Outputs — keep folder structure, ignore content
 outputs/*
