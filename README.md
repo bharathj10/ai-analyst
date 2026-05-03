@@ -2,6 +2,8 @@
 
 A Claude Code workspace that orchestrates specialist subagents to answer analytical questions end-to-end — from raw data to executive-ready insight.
 
+This project is tailored for Australian superannuation and financial-services analytics. It is designed to turn raw member, fund, or benchmark data into executive-ready analysis, charts, reports, and presentations.
+
 ## What's in here
 
 ```
@@ -21,9 +23,10 @@ ai-analyst/
 │   └── commands/           # Slash commands
 │       ├── analyse.md      # /analyse <path> <question>
 │       └── profile.md      # /profile <path>
-├── data/                   # Input datasets (gitignored)
-├── outputs/                # Reports, charts (gitignored except samples)
+├── data/                   # Input datasets (gitignored; do not commit PII)
+├── outputs/                # Generated reports and charts (gitignored)
 ├── scripts/                # Generated analysis scripts
+├── AGENTS.md               # Codex project instructions
 ├── CLAUDE.md               # Project context loaded every session
 └── requirements.txt
 ```
@@ -37,26 +40,41 @@ ai-analyst/
 
 2. **Clone and enter the project**:
    ```bash
-   git clone <your-repo-url>
+   git clone https://github.com/bharathj10/ai-analyst.git
    cd ai-analyst
    ```
 
 3. **Set up Python environment**:
    ```bash
-   python -m venv .venv
+   python3 -m venv .venv
    source .venv/bin/activate
    pip install -r requirements.txt
    ```
 
-4. **Launch Claude Code**:
+4. **Optional: configure Databricks credentials**:
+   ```bash
+   cp .env.example .env
+   # Fill in DATABRICKS_HOST, DATABRICKS_HTTP_PATH, and DATABRICKS_TOKEN
+   ```
+
+5. **Launch Claude Code**:
    ```bash
    claude
    ```
 
-5. **Try it**:
+6. **Try it**:
    - Drop a CSV or parquet file in `data/`
    - Run `/profile data/your_file.csv` to get a quick health-check
    - Run `/analyse data/your_file.csv "what's driving X"` for full orchestration
+
+## Data and outputs
+
+The repository intentionally does not include raw datasets, processed datasets, generated reports, or charts. Those folders are gitignored because superannuation member data can contain sensitive information.
+
+- Put input data in `data/`
+- Write cleaned datasets to `data/processed/`
+- Write reports, charts, decks, and other generated artefacts to `outputs/`
+- Keep any individual-level PII out of committed files
 
 ## How orchestration works
 
