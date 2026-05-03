@@ -141,6 +141,13 @@ def _header_band(slide, title: str, subtitle: str = ""):
              size=12, colour=C.COVER_SUB)
 
 
+def _existing_asset(path: str | Path, *, label: str) -> Path:
+    p = Path(path)
+    if not p.exists():
+        raise FileNotFoundError(f"{label} not found: {p}")
+    return p
+
+
 # ── Slide constructors ───────────────────────────────────────────────────────
 
 def slide_cover(prs: Presentation, cfg: DeckConfig) -> None:
@@ -267,9 +274,8 @@ def slide_chart(prs: Presentation, title: str, subtitle: str,
     _bg(slide, C.WHITE)
     _header_band(slide, title, subtitle)
 
-    p = Path(chart_path)
-    if p.exists():
-        slide.shapes.add_picture(str(p), Inches(0.3), Inches(1.12), Inches(8.8), Inches(5.9))
+    p = _existing_asset(chart_path, label="Chart asset")
+    slide.shapes.add_picture(str(p), Inches(0.3), Inches(1.12), Inches(8.8), Inches(5.9))
 
     # Right annotation panel
     _rect(slide, Inches(9.3), Inches(1.12), Inches(3.7), Inches(5.9), C.LGREY)
@@ -301,9 +307,8 @@ def slide_two_chart(prs: Presentation, title: str, subtitle: str,
         (left_chart, Inches(0.25), left_label),
         (right_chart, Inches(6.85), right_label),
     ]:
-        p = Path(path)
-        if p.exists():
-            slide.shapes.add_picture(str(p), x, Inches(1.12), Inches(6.35), Inches(4.8))
+        p = _existing_asset(path, label="Chart asset")
+        slide.shapes.add_picture(str(p), x, Inches(1.12), Inches(6.35), Inches(4.8))
         _rect(slide, x, Inches(6.05), Inches(6.35), Inches(0.03), C.TEAL)
         _txt(slide, label, x, Inches(6.1), Inches(6.35), Inches(0.6),
              size=11, colour=C.SLATE, italic=True, align=PP_ALIGN.CENTER)

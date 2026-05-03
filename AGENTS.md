@@ -116,9 +116,9 @@ outputs/                      All generated artefacts; datestamped YYYY-MM-DD_<d
 outputs/charts/               PNG/HTML charts
 scripts/                      Reusable Python scripts
 scripts/charts/               Chart-generation scripts
-.claude/agents/               Agent definitions
-.claude/skills/               Skill packages
-.claude/commands/             Slash command definitions
+.Codex/agents/               Agent definitions
+.Codex/skills/               Skill packages
+.Codex/commands/             Slash command definitions
 ```
 
 ## Privacy and data handling

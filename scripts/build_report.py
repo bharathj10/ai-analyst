@@ -115,6 +115,13 @@ def _spacer(doc: Document, space_before: float = 0, space_after: float = 6) -> N
     para.paragraph_format.space_after = Pt(space_after)
 
 
+def _existing_asset(path: str | Path, *, label: str) -> Path:
+    p = Path(path)
+    if not p.exists():
+        raise FileNotFoundError(f"{label} not found: {p}")
+    return p
+
+
 # ── Heading system ────────────────────────────────────────────────────────────
 
 def h1(doc: Document, text: str, numbered: str = None) -> None:
@@ -397,17 +404,16 @@ def findings_section(doc: Document, section_num: str, section_title: str,
                 bullet(doc, b)
 
         if finding.get("chart_path"):
-            p = Path(finding["chart_path"])
-            if p.exists():
-                try:
-                    para = doc.add_paragraph()
-                    para.alignment = WD_ALIGN_PARAGRAPH.CENTER
-                    para.paragraph_format.space_before = Pt(6)
-                    para.paragraph_format.space_after = Pt(4)
-                    run = para.add_run()
-                    run.add_picture(str(p), width=Inches(6.0))
-                except Exception:
-                    pass
+            p = _existing_asset(finding["chart_path"], label="Chart asset")
+            try:
+                para = doc.add_paragraph()
+                para.alignment = WD_ALIGN_PARAGRAPH.CENTER
+                para.paragraph_format.space_before = Pt(6)
+                para.paragraph_format.space_after = Pt(4)
+                run = para.add_run()
+                run.add_picture(str(p), width=Inches(6.0))
+            except Exception as exc:
+                raise RuntimeError(f"Could not embed chart asset: {p}") from exc
             if finding.get("chart_caption"):
                 cap = doc.add_paragraph()
                 cap.alignment = WD_ALIGN_PARAGRAPH.CENTER
