@@ -99,6 +99,30 @@ For example, if the user needs three analyses:
 3. Run the member exits analysis and save distinct outputs
 4. Then create a combined executive summary that compares themes, caveats, and actions across all three
 
+## Multiple projects in one repo
+
+When a user wants several separate projects in this repository, keep shared agents, skills, commands, dependencies, and governance instructions at the repo root. Put project-specific work under `projects/<project-name>/` with separate `data/`, `outputs/`, `scripts/`, and `README.md` folders/files.
+
+Use one repo for multiple projects only when they share access controls, data sensitivity, domain context, and package requirements. Recommend separate repositories when audiences, permissions, data sensitivity, or technical stacks differ.
+
+For project-specific work:
+
+- Confirm the active project folder before writing files
+- Keep raw and processed data inside that project's folder
+- Save outputs and charts under that project's `outputs/` path
+- Include the project name in generated artefact filenames
+- Do not blend findings across projects unless the user explicitly asks for a cross-project synthesis
+
+If the user does not specify a project folder, use root `data/` and `outputs/` for a single default project. If the user names a folder under `projects/`, keep all generated files inside that project folder unless they ask for a cross-project synthesis.
+
+Prompt users to provide:
+
+- Active project folder
+- Dataset path
+- Business question
+- Audience
+- Output folder
+
 ## Output standards
 
 - Executive summaries: 5 bullets max, ≤ 20 words each
