@@ -30,19 +30,33 @@ import pandas as pd
 import numpy as np
 
 # ── Brand / design constants ──────────────────────────────────────────────────
+# Matches color-system-reference.html exactly.
 
-NAVY   = "#1B3557"
-TEAL   = "#0A8A8F"
-AMBER  = "#E8A020"
-CHARCOAL = "#2C3E50"
-LGREY  = "#F7F8FA"
-MGREY  = "#E5E8EC"
-SLATE  = "#8A99AA"
-WHITE  = "#FFFFFF"
-POSITIVE = "#187A4E"
-NEGATIVE = "#C0392B"
+PRIMARY_BLUE = "#0E71F2"
+DEEP_NAVY    = "#112C5C"
+TEAL         = "#38BDAD"
+DEEP_TEAL    = "#22828F"
+SKY_BLUE     = "#82C9F0"
+AMBER        = "#FFC000"
+BLUE_SOFT    = "#88A7DB"
+NAVY_SOFT    = "#B1BAD3"
+MID_BLUE     = "#3599B8"
+MIST         = "#F3F5F9"
+SKY_TINT     = "#CDE9F9"
+SKY_WASH     = "#E6F4FC"
+EMBER        = "#FF7600"
+SIGNAL_RED   = "#EF4044"
+INK          = "#0A1628"
+INK_MUTED    = "#5A6478"
+INK_FAINT    = "#A0A8B8"
+SURFACE      = "#FFFFFF"
+CANVAS       = "#FAFBFC"
+GRID_LINE    = "#E8EBF0"
 
-PALETTE = [TEAL, AMBER, NAVY, "#6A5ACD", POSITIVE, NEGATIVE, "#E67E22", "#2980B9"]
+# Chart palette — primary series first
+PALETTE = [PRIMARY_BLUE, TEAL, MID_BLUE, SKY_BLUE, BLUE_SOFT, DEEP_TEAL, AMBER, EMBER]
+
+CHART_FONT = "Inter Tight, -apple-system, BlinkMacSystemFont, sans-serif"
 
 # ── HTML template ─────────────────────────────────────────────────────────────
 
@@ -52,51 +66,378 @@ HTML_HEAD = """<!DOCTYPE html>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{title}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
 <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
 <style>
   :root {{
-    --navy: {navy};
-    --teal: {teal};
-    --amber: {amber};
-    --charcoal: {charcoal};
-    --lgrey: {lgrey};
-    --slate: {slate};
+    --primary-blue: #0E71F2;
+    --deep-navy:    #112C5C;
+    --sky-blue:     #82C9F0;
+    --teal:         #38BDAD;
+    --deep-teal:    #22828F;
+    --amber:        #FFC000;
+    --blue-soft:    #88A7DB;
+    --navy-soft:    #B1BAD3;
+    --mid-blue:     #3599B8;
+    --mist:         #F3F5F9;
+    --sky-tint:     #CDE9F9;
+    --sky-wash:     #E6F4FC;
+    --ember:        #FF7600;
+    --signal-red:   #EF4044;
+    --ink:          #0A1628;
+    --ink-muted:    #5A6478;
+    --ink-faint:    #A0A8B8;
+    --hairline:     rgba(10, 22, 40, 0.08);
+    --surface:      #FFFFFF;
+    --canvas:       #FAFBFC;
+    --serif:        'Instrument Serif', Georgia, serif;
+    --sans:         'Inter Tight', -apple-system, BlinkMacSystemFont, sans-serif;
+    --mono:         'JetBrains Mono', ui-monospace, monospace;
   }}
-  body {{ font-family: 'Segoe UI', Calibri, sans-serif; color: var(--charcoal); background: #f9fafb; }}
-  .report-header {{ background: var(--navy); color: white; padding: 2.5rem 2rem 1.8rem; border-bottom: 4px solid var(--teal); }}
-  .report-header h1 {{ font-size: 2rem; font-weight: 700; margin-bottom: 0.3rem; }}
-  .report-header .meta {{ color: #8aaac8; font-size: 0.9rem; margin-top: 0.5rem; }}
-  .classification {{ background: var(--teal); color: white; font-size: 0.8rem; padding: 0.25rem 0.75rem; display: inline-block; border-radius: 3px; margin-bottom: 0.75rem; letter-spacing: 0.05em; }}
-  .section {{ background: white; border-radius: 8px; padding: 1.75rem 2rem; margin-bottom: 1.5rem; box-shadow: 0 1px 4px rgba(0,0,0,0.07); }}
-  .section-title {{ font-size: 1.15rem; font-weight: 700; color: var(--navy); border-bottom: 2px solid var(--teal); padding-bottom: 0.5rem; margin-bottom: 1.25rem; }}
-  .kpi-card {{ background: var(--lgrey); border-radius: 8px; padding: 1.25rem 1rem; text-align: center; border-top: 3px solid var(--teal); }}
-  .kpi-value {{ font-size: 2.4rem; font-weight: 700; color: var(--navy); line-height: 1; }}
-  .kpi-label {{ font-size: 0.82rem; color: var(--slate); margin-top: 0.3rem; }}
-  .kpi-note  {{ font-size: 0.75rem; color: var(--slate); margin-top: 0.15rem; font-style: italic; }}
-  .kpi-positive {{ border-top-color: {positive}; }}
-  .kpi-positive .kpi-value {{ color: {positive}; }}
-  .kpi-negative {{ border-top-color: {negative}; }}
-  .kpi-negative .kpi-value {{ color: {negative}; }}
-  .kpi-amber {{ border-top-color: var(--amber); }}
-  .kpi-amber .kpi-value {{ color: var(--amber); }}
-  .finding-lead {{ font-size: 1.05rem; color: var(--charcoal); line-height: 1.6; margin-bottom: 1rem; }}
-  .insight-box {{ border-left: 4px solid var(--teal); background: #e5f5f6; padding: 0.85rem 1rem; border-radius: 0 6px 6px 0; margin: 1rem 0; font-size: 0.95rem; }}
-  .insight-box.amber {{ border-left-color: var(--amber); background: #fdf3e0; }}
-  .insight-box strong {{ color: var(--navy); }}
-  .data-summary-table {{ font-size: 0.88rem; }}
-  .caveat-item {{ padding: 0.5rem 0; border-bottom: 1px solid var(--lgrey); font-size: 0.92rem; }}
-  .caveat-item:last-child {{ border-bottom: none; }}
-  .source-note {{ font-size: 0.78rem; color: var(--slate); font-style: italic; margin-top: 0.5rem; }}
-  .appendix-b {{ background: #f0f4f8; border: 1px solid var(--mgrey); border-radius: 8px; padding: 1.5rem; margin-bottom: 1.5rem; }}
-  .appendix-b h5 {{ color: var(--navy); font-weight: 600; }}
-  .stat-pill {{ display: inline-block; background: white; border: 1px solid var(--mgrey); border-radius: 20px; padding: 0.2rem 0.75rem; font-size: 0.82rem; margin: 0.15rem; color: var(--charcoal); }}
-  footer {{ background: var(--navy); color: #8aaac8; text-align: center; padding: 1rem; font-size: 0.8rem; margin-top: 2rem; }}
-  .nav-sticky {{ position: sticky; top: 0; z-index: 100; background: white; border-bottom: 1px solid var(--mgrey); padding: 0.5rem 1rem; }}
-  .nav-link {{ color: var(--navy) !important; font-size: 0.85rem; }}
-  .nav-link:hover {{ color: var(--teal) !important; }}
-  @media print {{ .nav-sticky {{ display: none; }} }}
+
+  *, *::before, *::after {{ box-sizing: border-box; margin: 0; padding: 0; }}
+  html {{ -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; scroll-behavior: smooth; }}
+
+  body {{
+    font-family: var(--sans);
+    color: var(--ink);
+    background: var(--canvas);
+    font-size: 15px;
+    line-height: 1.6;
+    letter-spacing: -0.01em;
+  }}
+
+  /* ── Header ───────────────────────────────────────────────── */
+  .report-header {{
+    background: var(--deep-navy);
+    color: white;
+    padding: 52px 56px 44px;
+    position: relative;
+    overflow: hidden;
+  }}
+  .report-header::after {{
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--primary-blue) 0%, var(--teal) 100%);
+  }}
+  .classification {{
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--sky-blue);
+    display: block;
+    margin-bottom: 20px;
+  }}
+  .report-header h1 {{
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: clamp(30px, 4.5vw, 52px);
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+    color: white;
+    margin: 0 0 18px;
+    max-width: 800px;
+  }}
+  .report-header h1 em {{
+    font-style: italic;
+    color: var(--sky-blue);
+  }}
+  .meta {{
+    font-size: 13px;
+    color: var(--navy-soft);
+    letter-spacing: 0.01em;
+    line-height: 1.6;
+  }}
+
+  /* ── Navigation ──────────────────────────────────────────── */
+  .nav-sticky {{
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--surface);
+    border-bottom: 1px solid var(--hairline);
+    padding: 0 56px;
+  }}
+  .nav-sticky nav {{
+    height: 46px;
+    display: flex;
+    align-items: center;
+    gap: 0;
+  }}
+  .nav-link {{
+    font-family: var(--sans) !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    color: var(--ink-muted) !important;
+    text-decoration: none !important;
+    padding: 0 14px !important;
+    height: 46px;
+    display: flex !important;
+    align-items: center;
+    border-bottom: 2px solid transparent;
+    transition: color 0.18s ease, border-color 0.18s ease;
+    letter-spacing: -0.005em;
+  }}
+  .nav-link:hover {{
+    color: var(--primary-blue) !important;
+    border-bottom-color: var(--primary-blue);
+  }}
+
+  /* ── Report body ─────────────────────────────────────────── */
+  .report-body {{
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 36px 56px 80px;
+  }}
+
+  /* ── KPI strip ───────────────────────────────────────────── */
+  .kpi-strip {{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 14px;
+    margin-bottom: 20px;
+  }}
+  .kpi-card {{
+    background: var(--surface);
+    border-radius: 12px;
+    padding: 22px 18px 18px;
+    border: 1px solid var(--hairline);
+    border-top: 3px solid var(--deep-teal);
+    text-align: center;
+  }}
+  .kpi-value {{
+    font-family: var(--sans);
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--deep-navy);
+    line-height: 1;
+    letter-spacing: -0.04em;
+    margin-bottom: 6px;
+  }}
+  .kpi-label {{
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--ink-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+  }}
+  .kpi-note {{
+    font-size: 11px;
+    color: var(--ink-faint);
+    margin-top: 4px;
+    font-style: italic;
+    line-height: 1.3;
+  }}
+  .kpi-positive {{ border-top-color: var(--teal); }}
+  .kpi-positive .kpi-value {{ color: var(--deep-teal); }}
+  .kpi-negative {{ border-top-color: var(--signal-red); }}
+  .kpi-negative .kpi-value {{ color: var(--signal-red); }}
+  .kpi-amber   {{ border-top-color: var(--amber); }}
+  .kpi-amber   .kpi-value {{ color: #9A7000; }}
+
+  /* ── Sections ────────────────────────────────────────────── */
+  .section {{
+    background: var(--surface);
+    border-radius: 12px;
+    padding: 30px 34px;
+    margin-bottom: 18px;
+    border: 1px solid var(--hairline);
+  }}
+  .section-eyebrow {{
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--primary-blue);
+    margin-bottom: 6px;
+  }}
+  .section-title {{
+    font-family: var(--sans);
+    font-size: 19px;
+    font-weight: 600;
+    color: var(--deep-navy);
+    letter-spacing: -0.015em;
+    line-height: 1.3;
+    padding-bottom: 14px;
+    margin-bottom: 18px;
+    border-bottom: 1px solid var(--hairline);
+  }}
+
+  /* ── Executive summary ───────────────────────────────────── */
+  .exec-bullet {{
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 11px 0;
+    border-bottom: 1px solid var(--hairline);
+    font-size: 14.5px;
+    line-height: 1.55;
+    color: var(--ink);
+  }}
+  .exec-bullet:last-child {{ border-bottom: none; padding-bottom: 0; }}
+  .exec-bullet::before {{
+    content: '';
+    flex-shrink: 0;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--primary-blue);
+    margin-top: 7px;
+  }}
+
+  /* ── Findings ────────────────────────────────────────────── */
+  .finding-lead {{
+    font-size: 15px;
+    color: var(--ink);
+    line-height: 1.7;
+    margin-bottom: 18px;
+    max-width: 860px;
+  }}
+  .insight-box {{
+    border-left: 3px solid var(--primary-blue);
+    background: var(--sky-wash);
+    padding: 14px 18px;
+    border-radius: 0 8px 8px 0;
+    margin: 18px 0;
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--ink);
+  }}
+  .insight-box.amber {{
+    border-left-color: var(--amber);
+    background: #FFFBEA;
+  }}
+  .insight-box strong {{ color: var(--deep-navy); font-weight: 600; }}
+
+  /* ── Source / caption ────────────────────────────────────── */
+  .source-note {{
+    font-family: var(--mono);
+    font-size: 10.5px;
+    color: var(--ink-faint);
+    margin-top: 10px;
+    letter-spacing: 0.03em;
+  }}
+
+  /* ── Caveats ─────────────────────────────────────────────── */
+  .caveat-item {{
+    display: flex;
+    gap: 10px;
+    padding: 9px 0;
+    border-bottom: 1px solid var(--hairline);
+    font-size: 13.5px;
+    color: var(--ink-muted);
+    line-height: 1.5;
+  }}
+  .caveat-item:last-child {{ border-bottom: none; padding-bottom: 0; }}
+  .caveat-item::before {{ content: '—'; color: var(--ink-faint); flex-shrink: 0; }}
+
+  /* ── Data summary (Appendix B) ───────────────────────────── */
+  .appendix-b {{
+    background: var(--mist);
+    border: 1px solid var(--hairline);
+    border-radius: 12px;
+    padding: 30px 34px;
+    margin-bottom: 18px;
+  }}
+  .appendix-b h5 {{
+    font-family: var(--sans);
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--deep-navy);
+    letter-spacing: -0.015em;
+    margin-bottom: 4px;
+  }}
+  .appendix-b .appendix-desc {{
+    font-size: 13px;
+    color: var(--ink-muted);
+    margin-bottom: 14px;
+    line-height: 1.5;
+  }}
+  .appendix-b h6 {{
+    font-family: var(--sans);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--ink-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-top: 22px;
+    margin-bottom: 8px;
+  }}
+  .stat-pill {{
+    display: inline-flex;
+    align-items: center;
+    background: var(--surface);
+    border: 1px solid var(--hairline);
+    border-radius: 20px;
+    padding: 3px 11px;
+    font-size: 12px;
+    margin: 2px;
+    color: var(--ink);
+    gap: 4px;
+  }}
+  .stat-pill strong {{ font-weight: 600; }}
+  .data-summary-table {{ font-size: 12px; }}
+
+  /* ── Tables ──────────────────────────────────────────────── */
+  .table th {{
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--ink-muted);
+    border-bottom: 2px solid var(--hairline) !important;
+    vertical-align: middle;
+  }}
+  .table td {{
+    font-size: 13px;
+    vertical-align: middle;
+    color: var(--ink);
+  }}
+  .table-striped > tbody > tr:nth-of-type(odd) > * {{
+    background-color: var(--mist);
+    --bs-table-bg-type: none;
+  }}
+  .table-hover > tbody > tr:hover > * {{
+    background-color: var(--sky-tint);
+    --bs-table-bg-type: none;
+  }}
+
+  /* ── Footer ──────────────────────────────────────────────── */
+  .report-footer {{
+    background: var(--deep-navy);
+    color: var(--navy-soft);
+    text-align: center;
+    padding: 20px 56px;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    margin-top: 40px;
+  }}
+
+  /* ── Print ───────────────────────────────────────────────── */
+  @media print {{
+    .nav-sticky {{ display: none; }}
+    .report-header, .report-footer {{ -webkit-print-color-adjust: exact; print-color-adjust: exact; }}
+  }}
+
+  /* ── Mobile ──────────────────────────────────────────────── */
+  @media (max-width: 768px) {{
+    .report-header {{ padding: 36px 24px 28px; }}
+    .nav-sticky {{ padding: 0 20px; }}
+    .report-body {{ padding: 24px 20px 60px; }}
+    .section, .appendix-b {{ padding: 22px 18px; }}
+    .kpi-strip {{ grid-template-columns: repeat(2, 1fr); }}
+    .report-header h1 {{ font-size: 28px; }}
+  }}
 </style>
 </head>
 <body>
@@ -119,9 +460,9 @@ $(document).ready(function() {{
   }}
 }});
 </script>
-<footer>
-  {classification} &nbsp;|&nbsp; {source_note} &nbsp;|&nbsp; Generated {today}
-</footer>
+<div class="report-footer">
+  {classification} &nbsp;&nbsp;|&nbsp;&nbsp; {source_note} &nbsp;&nbsp;|&nbsp;&nbsp; Generated {today}
+</div>
 </body></html>
 """
 
@@ -154,20 +495,20 @@ def _plotly_bar(
             textposition="outside",
         ))
         if reference_line is not None:
-            fig.add_hline(y=reference_line, line_dash="dash", line_color=SLATE,
+            fig.add_hline(y=reference_line, line_dash="dash", line_color=INK_FAINT,
                           annotation_text=reference_label,
                           annotation_position="top right")
         fig.update_layout(yaxis_title=yaxis_title)
 
     fig.update_layout(
-        title=dict(text=title, font=dict(size=14, color=NAVY), x=0),
-        plot_bgcolor=WHITE, paper_bgcolor=WHITE,
-        font=dict(family="Segoe UI, Calibri, sans-serif", color=CHARCOAL),
+        title=dict(text=title, font=dict(size=13, color=DEEP_NAVY, family=CHART_FONT), x=0),
+        plot_bgcolor=SURFACE, paper_bgcolor=SURFACE,
+        font=dict(family=CHART_FONT, color=INK),
         height=height,
-        margin=dict(l=40, r=40, t=50, b=40),
+        margin=dict(l=40, r=40, t=48, b=40),
     )
-    fig.update_xaxes(showgrid=False)
-    fig.update_yaxes(showgrid=True, gridcolor=MGREY)
+    fig.update_xaxes(showgrid=False, linecolor=GRID_LINE)
+    fig.update_yaxes(showgrid=True, gridcolor=GRID_LINE, zeroline=False)
 
     return fig.to_html(full_html=False, include_plotlyjs=False, config={"responsive": True})
 
@@ -188,15 +529,16 @@ def _plotly_grouped_bar(
         ))
 
     fig.update_layout(
-        title=dict(text=title, font=dict(size=14, color=NAVY), x=0),
-        barmode="group", plot_bgcolor=WHITE, paper_bgcolor=WHITE,
-        font=dict(family="Segoe UI, Calibri, sans-serif", color=CHARCOAL),
+        title=dict(text=title, font=dict(size=13, color=DEEP_NAVY, family=CHART_FONT), x=0),
+        barmode="group", plot_bgcolor=SURFACE, paper_bgcolor=SURFACE,
+        font=dict(family=CHART_FONT, color=INK),
         yaxis_title=yaxis_title, height=height,
-        margin=dict(l=40, r=40, t=50, b=40),
-        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
+        margin=dict(l=40, r=40, t=48, b=40),
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1,
+                    font=dict(size=12)),
     )
-    fig.update_xaxes(showgrid=False)
-    fig.update_yaxes(showgrid=True, gridcolor=MGREY)
+    fig.update_xaxes(showgrid=False, linecolor=GRID_LINE)
+    fig.update_yaxes(showgrid=True, gridcolor=GRID_LINE, zeroline=False)
     return fig.to_html(full_html=False, include_plotlyjs=False, config={"responsive": True})
 
 
@@ -212,16 +554,16 @@ def _plotly_histogram(
         marker_color=colour, opacity=0.85,
     ))
     fig.update_layout(
-        title=dict(text=title, font=dict(size=14, color=NAVY), x=0),
+        title=dict(text=title, font=dict(size=13, color=DEEP_NAVY, family=CHART_FONT), x=0),
         xaxis_title=xaxis_title + (" (log₁₀ scale)" if log_x else ""),
         yaxis_title="Number of members",
-        plot_bgcolor=WHITE, paper_bgcolor=WHITE,
-        font=dict(family="Segoe UI, Calibri, sans-serif"),
+        plot_bgcolor=SURFACE, paper_bgcolor=SURFACE,
+        font=dict(family=CHART_FONT, color=INK),
         height=height,
-        margin=dict(l=40, r=20, t=50, b=40),
+        margin=dict(l=40, r=20, t=48, b=40),
     )
-    fig.update_xaxes(showgrid=False)
-    fig.update_yaxes(showgrid=True, gridcolor=MGREY)
+    fig.update_xaxes(showgrid=False, linecolor=GRID_LINE)
+    fig.update_yaxes(showgrid=True, gridcolor=GRID_LINE, zeroline=False)
     return fig.to_html(full_html=False, include_plotlyjs=False, config={"responsive": True})
 
 
@@ -239,15 +581,18 @@ def _plotly_scatter(
         fig = px.scatter(df_plot, x="x", y="y", color="group",
                          color_discrete_sequence=PALETTE)
     else:
-        fig = go.Figure(go.Scatter(x=x, y=y, mode="markers", marker=dict(color=TEAL, opacity=0.5)))
+        fig = go.Figure(go.Scatter(x=x, y=y, mode="markers",
+                                   marker=dict(color=PRIMARY_BLUE, opacity=0.5, size=6)))
 
     fig.update_layout(
-        title=dict(text=title, font=dict(size=14, color=NAVY), x=0),
+        title=dict(text=title, font=dict(size=13, color=DEEP_NAVY, family=CHART_FONT), x=0),
         xaxis_title=xaxis_title, yaxis_title=yaxis_title,
-        plot_bgcolor=WHITE, paper_bgcolor=WHITE,
-        font=dict(family="Segoe UI, Calibri, sans-serif"),
-        height=height, margin=dict(l=40, r=40, t=50, b=40),
+        plot_bgcolor=SURFACE, paper_bgcolor=SURFACE,
+        font=dict(family=CHART_FONT, color=INK),
+        height=height, margin=dict(l=40, r=40, t=48, b=40),
     )
+    fig.update_xaxes(showgrid=False, linecolor=GRID_LINE)
+    fig.update_yaxes(showgrid=True, gridcolor=GRID_LINE, zeroline=False)
     return fig.to_html(full_html=False, include_plotlyjs=False, config={"responsive": True})
 
 
@@ -259,13 +604,10 @@ def build_data_summary_html(df: pd.DataFrame, dataset_name: str) -> str:
     This is the Appendix B equivalent — a quality check that shows what the
     analysis is based on before executives read the findings.
     """
-    import plotly.graph_objects as go
-
     n_rows, n_cols = df.shape
     n_dupes = df.duplicated().sum()
     null_pcts = {c: df[c].isna().mean() * 100 for c in df.columns if df[c].isna().any()}
 
-    # Pills for key stats
     pills_html = "".join([
         f'<span class="stat-pill"><strong>{n_rows:,}</strong> total records</span>',
         f'<span class="stat-pill"><strong>{n_cols}</strong> columns</span>',
@@ -273,74 +615,81 @@ def build_data_summary_html(df: pd.DataFrame, dataset_name: str) -> str:
         f'<span class="stat-pill"><strong>{df.memory_usage(deep=True).sum() / 1e6:.1f} MB</strong> in memory</span>',
     ])
 
-    # Schema table
     schema_rows = ""
     for col in df.columns:
         nn = df[col].notna().sum()
         null_pct = (1 - nn / n_rows) * 100
         dtype = str(df[col].dtype)
         flag = " ⚠" if null_pct > 20 else (" !" if null_pct > 5 else "")
-        schema_rows += f"<tr><td><code>{col}</code></td><td>{dtype}</td><td>{nn:,}</td><td>{null_pct:.1f}%{flag}</td></tr>"
+        schema_rows += (
+            f"<tr><td><code style='font-family:var(--mono);font-size:11px;color:{DEEP_NAVY}'>{col}</code></td>"
+            f"<td style='color:{INK_MUTED}'>{dtype}</td>"
+            f"<td>{nn:,}</td>"
+            f"<td style='color:{SIGNAL_RED if null_pct>20 else EMBER if null_pct>5 else INK_MUTED}'>{null_pct:.1f}%{flag}</td></tr>"
+        )
 
-    # Numeric summary table
     num_cols = df.select_dtypes(include=np.number).columns
     num_summary_html = ""
     if len(num_cols):
         desc = df[num_cols].describe(percentiles=[0.25, 0.5, 0.75, 0.9]).round(2)
         num_summary_html = f"""
-        <h6 class="mt-3 mb-2" style="color:{NAVY}">Numeric columns — distribution summary</h6>
+        <h6>Numeric columns — distribution summary</h6>
         <div class="table-responsive">
         {desc.to_html(classes="table table-sm data-summary-table", border=0)}
         </div>"""
 
-    # Categorical summary
     cat_cols = df.select_dtypes(include=["object", "category"]).columns
     cat_summary_html = ""
     if len(cat_cols):
         cat_parts = []
-        for col in cat_cols[:8]:  # cap at 8 categorical columns
+        for col in cat_cols[:8]:
             top = df[col].value_counts().head(5)
-            rows = "".join(f"<tr><td>{v}</td><td>{c:,}</td><td>{c/n_rows*100:.1f}%</td></tr>"
-                           for v, c in top.items())
+            rows = "".join(
+                f"<tr><td>{v}</td><td>{c:,}</td><td style='color:{INK_MUTED}'>{c/n_rows*100:.1f}%</td></tr>"
+                for v, c in top.items()
+            )
             cat_parts.append(f"""
             <div class="col-md-6 mb-3">
-              <div style="background:white;border:1px solid {MGREY};border-radius:6px;padding:0.75rem;">
-                <strong style="color:{NAVY}">{col}</strong>
-                <span class="text-muted" style="font-size:0.78rem"> — {df[col].nunique()} unique values</span>
-                <table class="table table-sm mb-0 mt-1" style="font-size:0.82rem">
+              <div style="background:{SURFACE};border:1px solid {GRID_LINE};border-radius:8px;padding:14px;">
+                <div style="font-size:13px;font-weight:600;color:{DEEP_NAVY};margin-bottom:2px">{col}</div>
+                <div style="font-size:11px;color:{INK_MUTED};margin-bottom:8px">{df[col].nunique()} unique values</div>
+                <table class="table table-sm mb-0" style="font-size:12px">
                   <thead><tr><th>Value</th><th>Count</th><th>%</th></tr></thead>
                   <tbody>{rows}</tbody>
                 </table>
               </div>
             </div>""")
         cat_summary_html = f"""
-        <h6 class="mt-3 mb-2" style="color:{NAVY}">Categorical columns — top values</h6>
+        <h6>Categorical columns — top values</h6>
         <div class="row">{''.join(cat_parts)}</div>"""
 
-    # Quality flags
     flags = []
     if n_dupes > 0:
-        flags.append(f"<li class='text-warning'>⚠ {n_dupes:,} duplicate rows detected</li>")
+        flags.append(f"<li style='color:{EMBER}'>⚠ {n_dupes:,} duplicate rows detected</li>")
     for col, pct in null_pcts.items():
         if pct > 20:
-            flags.append(f"<li class='text-danger'>⚠ <code>{col}</code>: {pct:.1f}% null — may affect results</li>")
+            flags.append(f"<li style='color:{SIGNAL_RED}'>⚠ <code style='font-family:var(--mono)'>{col}</code>: {pct:.1f}% null — may affect results</li>")
         elif pct > 5:
-            flags.append(f"<li class='text-warning'>! <code>{col}</code>: {pct:.1f}% null</li>")
-    flags_html = f"<ul class='mb-0'>{''.join(flags)}</ul>" if flags else "<p class='text-success mb-0'>✓ No major data quality flags</p>"
+            flags.append(f"<li style='color:{EMBER}'>! <code style='font-family:var(--mono)'>{col}</code>: {pct:.1f}% null</li>")
+    flags_html = (
+        f"<ul style='padding-left:16px;margin:0;font-size:13px'>{''.join(flags)}</ul>"
+        if flags
+        else f"<p style='color:{DEEP_TEAL};font-size:13px;margin:0'>✓ No major data quality flags</p>"
+    )
 
     return f"""
 <div class="appendix-b" id="data-summary">
   <h5>Data Summary — Quality Check</h5>
-  <p class="text-muted" style="font-size:0.88rem">
-    This section confirms what data the analysis is based on. Check that the totals and
-    distributions look reasonable before relying on the findings above.
-    <strong>Source: {dataset_name}</strong>
+  <p class="appendix-desc">
+    This section confirms what data the analysis is based on.
+    Check that the totals and distributions look reasonable before relying on the findings above.
+    <strong style="color:{DEEP_NAVY}">Source: {dataset_name}</strong>
   </p>
-  <div class="mb-2">{pills_html}</div>
+  <div style="margin-bottom:14px">{pills_html}</div>
 
-  <div class="row mt-3">
+  <div class="row mt-2">
     <div class="col-md-7">
-      <h6 style="color:{NAVY}">Column schema</h6>
+      <h6>Column schema</h6>
       <div class="table-responsive">
         <table class="table table-sm data-summary-table">
           <thead><tr><th>Column</th><th>Type</th><th>Non-null</th><th>Null %</th></tr></thead>
@@ -349,7 +698,7 @@ def build_data_summary_html(df: pd.DataFrame, dataset_name: str) -> str:
       </div>
     </div>
     <div class="col-md-5">
-      <h6 style="color:{NAVY}">Data quality flags</h6>
+      <h6>Data quality flags</h6>
       {flags_html}
     </div>
   </div>
@@ -363,18 +712,20 @@ def build_full_data_table_html(df: pd.DataFrame, max_rows: int = 5000) -> str:
     Generate the full data table at the bottom of the report.
     Truncates to max_rows and excludes columns that look like IDs/PII.
     """
-    # Exclude PII-looking columns
     pii_patterns = ["member_id", "email", "phone", "name", "address", "tfn", "tax_file"]
     safe_cols = [c for c in df.columns
                  if not any(p in c.lower() for p in pii_patterns)]
 
     display_df = df[safe_cols].head(max_rows).copy()
 
-    # Round numerics to 2dp for readability
     for col in display_df.select_dtypes(include=np.number).columns:
         display_df[col] = display_df[col].round(2)
 
-    truncation_note = f"<p class='text-muted' style='font-size:0.8rem'>Showing first {max_rows:,} of {len(df):,} records. PII columns hidden.</p>" if len(df) > max_rows else f"<p class='text-muted' style='font-size:0.8rem'>All {len(df):,} records. PII columns hidden.</p>"
+    truncation_note = (
+        f"<p style='font-size:12px;color:{INK_MUTED};margin-bottom:12px'>Showing first {max_rows:,} of {len(df):,} records. PII columns hidden.</p>"
+        if len(df) > max_rows
+        else f"<p style='font-size:12px;color:{INK_MUTED};margin-bottom:12px'>All {len(df):,} records. PII columns hidden.</p>"
+    )
 
     table_html = display_df.to_html(
         table_id="full-data-table",
@@ -386,10 +737,10 @@ def build_full_data_table_html(df: pd.DataFrame, max_rows: int = 5000) -> str:
 
     return f"""
 <div class="section" id="full-data">
-  <div class="section-title">Full Dataset — Explore & Verify</div>
+  <div class="section-title">Full Dataset — Explore &amp; Verify</div>
   <p class="finding-lead">
     Use this table to spot-check that the findings make sense, verify totals,
-    or drill down into specific rows. Use the search box to filter.
+    or drill into specific rows. Use the search box to filter.
   </p>
   {truncation_note}
   <div class="table-responsive">
@@ -431,8 +782,6 @@ def build_html_report(cfg: HTMLReportConfig, out_path: Path) -> None:
         cfg.prepared_date = datetime.date.today().strftime("%d %B %Y")
 
     today_str = datetime.date.today().strftime("%d/%m/%Y")
-    nav_links = ""
-    body_parts = []
 
     # ── Header ─────────────────────────────────────────────────────────────────
     header_html = f"""
@@ -451,11 +800,9 @@ def build_html_report(cfg: HTMLReportConfig, out_path: Path) -> None:
     nav_labels = ["Executive Summary", "Findings", "Data Summary", "Full Data", "Caveats"]
     nav_html = f"""
 <div class="nav-sticky">
-  <div class="container-fluid">
-    <nav class="d-flex gap-3 flex-wrap">
-      {''.join(f'<a class="nav-link" href="#{i}">{l}</a>' for i, l in zip(nav_items, nav_labels))}
-    </nav>
-  </div>
+  <nav>
+    {''.join(f'<a class="nav-link" href="#{i}">{l}</a>' for i, l in zip(nav_items, nav_labels))}
+  </nav>
 </div>"""
 
     # ── KPI strip ──────────────────────────────────────────────────────────────
@@ -466,23 +813,22 @@ def build_html_report(cfg: HTMLReportConfig, out_path: Path) -> None:
             flag_class = f" kpi-{kpi.get('flag', '')}" if kpi.get("flag") else ""
             note = f'<div class="kpi-note">{kpi["note"]}</div>' if kpi.get("note") else ""
             cards.append(f"""
-            <div class="col">
-              <div class="kpi-card{flag_class}">
-                <div class="kpi-value">{kpi["value"]}</div>
-                <div class="kpi-label">{kpi["label"]}</div>
-                {note}
-              </div>
+            <div class="kpi-card{flag_class}">
+              <div class="kpi-value">{kpi["value"]}</div>
+              <div class="kpi-label">{kpi["label"]}</div>
+              {note}
             </div>""")
-        kpi_html = f'<div class="section"><div class="row g-3">{"".join(cards)}</div></div>'
+        kpi_html = f'<div class="kpi-strip">{"".join(cards)}</div>'
 
     # ── Executive summary ──────────────────────────────────────────────────────
     exec_html = ""
     if cfg.exec_summary:
-        items = "".join(f'<li class="caveat-item">{b}</li>' for b in cfg.exec_summary)
+        items = "".join(f'<div class="exec-bullet">{b}</div>' for b in cfg.exec_summary)
         exec_html = f"""
 <div class="section" id="exec-summary">
-  <div class="section-title">Executive Summary</div>
-  <ul class="list-unstyled mb-0">{items}</ul>
+  <div class="section-eyebrow">Executive Summary</div>
+  <div class="section-title">Key Findings at a Glance</div>
+  {items}
 </div>"""
 
     # ── Findings ───────────────────────────────────────────────────────────────
@@ -494,23 +840,31 @@ def build_html_report(cfg: HTMLReportConfig, out_path: Path) -> None:
             insight_style = "amber" if finding.get("insight_style") == "amber" else ""
             insight_html = f'<div class="insight-box {insight_style}"><strong>Key insight: </strong>{finding["insight"]}</div>'
 
+        caption_html = ""
+        if finding.get("chart_caption"):
+            caption_html = f'<p class="source-note">{finding["chart_caption"]}</p>'
+        elif finding.get("source_note"):
+            caption_html = f'<p class="source-note">{finding["source_note"]}</p>'
+
         findings_html += f"""
 <div class="section">
-  <div class="section-title">{i+1}. {finding["title"]}</div>
-  <p class="finding-lead">{finding.get("narrative", "")}</p>
+  <div class="section-eyebrow">Finding {i+1}</div>
+  <div class="section-title">{finding["title"]}</div>
+  <p class="finding-lead">{finding.get("body", finding.get("narrative", ""))}</p>
   {insight_html}
   {chart_div}
-  {f'<p class="source-note">{finding["source_note"]}</p>' if finding.get("source_note") else ""}
+  {caption_html}
 </div>"""
     findings_html += "</div>"
 
     # ── Caveats ────────────────────────────────────────────────────────────────
     caveats_html = ""
     if cfg.caveats:
-        items = "".join(f'<div class="caveat-item">– {c}</div>' for c in cfg.caveats)
+        items = "".join(f'<div class="caveat-item">{c}</div>' for c in cfg.caveats)
         caveats_html = f"""
 <div class="section" id="caveats">
-  <div class="section-title">Caveats & Limitations</div>
+  <div class="section-eyebrow">Caveats &amp; Limitations</div>
+  <div class="section-title">What to Bear in Mind</div>
   {items}
 </div>"""
 
@@ -527,13 +881,13 @@ def build_html_report(cfg: HTMLReportConfig, out_path: Path) -> None:
                 if cfg.include_full_table:
                     full_data_html = build_full_data_table_html(df, cfg.max_table_rows)
         except Exception as e:
-            data_summary_html = f'<div class="section"><div class="section-title">Data Summary</div><p class="text-muted">Could not load dataset: {e}</p></div>'
+            data_summary_html = f'<div class="section"><div class="section-title">Data Summary</div><p style="color:{INK_MUTED}">Could not load dataset: {e}</p></div>'
 
     # ── Assemble ───────────────────────────────────────────────────────────────
     body = f"""
 {header_html}
 {nav_html}
-<div class="container-fluid py-4 px-4">
+<div class="report-body">
   {kpi_html}
   {exec_html}
   {findings_html}
@@ -542,14 +896,14 @@ def build_html_report(cfg: HTMLReportConfig, out_path: Path) -> None:
   {caveats_html}
 </div>"""
 
-    html = HTML_HEAD.format(
-        title=cfg.title, navy=NAVY, teal=TEAL, amber=AMBER,
-        charcoal=CHARCOAL, lgrey=LGREY, slate=SLATE, mgrey=MGREY,
-        positive=POSITIVE, negative=NEGATIVE,
-    ) + body + HTML_TAIL.format(
-        classification=cfg.classification,
-        source_note=cfg.source_note,
-        today=today_str,
+    html = (
+        HTML_HEAD.format(title=cfg.title)
+        + body
+        + HTML_TAIL.format(
+            classification=cfg.classification,
+            source_note=cfg.source_note,
+            today=today_str,
+        )
     )
 
     out_path.parent.mkdir(parents=True, exist_ok=True)
@@ -570,13 +924,12 @@ def build_salary_sacrifice_html() -> None:
     n_participants = [31, 213, 664, 876, 475, 175]
     sacrifice_pct_salary = [7.0, 6.6, 6.3, 6.1, 5.7, 5.1]
 
-    # Build Plotly chart divs
     chart_participation = _plotly_bar(
         age_bands, participation_rates,
         title="Participation Rate Climbs Steadily With Age",
         yaxis_title="Participation rate (%)",
         xaxis_title="Age band",
-        colour=TEAL,
+        colour=PRIMARY_BLUE,
         reference_line=48.7,
         reference_label="Fund average: 48.7%",
         text_format=".1f",
@@ -590,7 +943,6 @@ def build_salary_sacrifice_html() -> None:
         colours=[TEAL, AMBER],
     )
 
-    # Salary quartile data
     salary_q_labels = ["Q1 (lowest)", "Q2", "Q3", "Q4 (highest)"]
     participation_by_q = {
         "18–24": [0.7, 4.2, 11.8, 33.3],
@@ -602,7 +954,7 @@ def build_salary_sacrifice_html() -> None:
         {band: rates for band, rates in participation_by_q.items()},
         title="Salary Drives Participation for Young Members, Less So for Older Ones",
         yaxis_title="Participation rate (%)",
-        colours=[TEAL, AMBER, NAVY],
+        colours=[PRIMARY_BLUE, TEAL, MID_BLUE],
     )
 
     chart_pct_salary = _plotly_bar(
@@ -644,7 +996,7 @@ def build_salary_sacrifice_html() -> None:
         findings=[
             {
                 "title": "Participation Triples Between Ages 25 and 55 — The Activation Gap Is the Story",
-                "narrative": (
+                "body": (
                     "The fund's overall participation rate of 48.7% masks a 54-percentage-point spread across age cohorts. "
                     "Only 9.2% of 18–24 year-olds salary sacrifice; by age 55–64, 63.5% do. "
                     "This is not primarily a salary story — age rank is 2.3× more predictive than log salary in an OLS model. "
@@ -657,7 +1009,7 @@ def build_salary_sacrifice_html() -> None:
             },
             {
                 "title": "Conditional Amounts Are Nearly Flat — $6,024 to $7,396 Across All Age Bands",
-                "narrative": (
+                "body": (
                     "Among members who do salary sacrifice, the annual amount is remarkably consistent regardless of age. "
                     "The median ranges from $6,024 (35–44 band) to $7,396 (18–24 band). "
                     "The 18–24 figure is based on only 31 participants and should be treated as indicative. "
@@ -670,7 +1022,7 @@ def build_salary_sacrifice_html() -> None:
             },
             {
                 "title": "Salary Is the Gating Factor for Young Members — But Life Stage Dominates for 45+",
-                "narrative": (
+                "body": (
                     "Breaking participation down by salary quartile reveals a clear pattern: "
                     "for members aged 18–34, salary is the primary barrier. Q1 earners in those bands barely participate; "
                     "Q4 earners reach 33–61% participation. For members aged 45+, even Q1 earners participate at meaningful rates, "
@@ -685,7 +1037,7 @@ def build_salary_sacrifice_html() -> None:
             },
             {
                 "title": "Younger Participants Stretch Further Proportionally — 7.0% vs 5.1% of Salary",
-                "narrative": (
+                "body": (
                     "When sacrifice is expressed as a percentage of annual salary, younger participants are "
                     "contributing more relative to their income than older cohorts: 7.0% at age 18–24 versus 5.1% at 65+. "
                     "This inverse relationship reflects the concessional cap ($30,000 p.a. including employer SG) "
@@ -718,7 +1070,6 @@ if __name__ == "__main__":
         findings_path = sys.argv[1]
         data_path = sys.argv[2]
         print(f"Building HTML from {findings_path} + {data_path}")
-        # Generic build from findings JSON
         with open(findings_path) as f:
             findings = json.load(f)
         cfg = HTMLReportConfig(

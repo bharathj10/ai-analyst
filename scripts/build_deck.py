@@ -23,18 +23,22 @@ from pptx.enum.text import PP_ALIGN
 # ── Design system ────────────────────────────────────────────────────────────
 
 class C:
-    """Centralised colour palette — every colour used in the deck lives here."""
-    NAVY       = RGBColor(0x1B, 0x35, 0x57)   # Primary — headlines, backgrounds
-    TEAL       = RGBColor(0x0A, 0x8A, 0x8F)   # Accent 1 — rules, highlights
-    AMBER      = RGBColor(0xE8, 0xA0, 0x20)   # Accent 2 — alerts, opportunity
+    """Centralised colour palette — matches color-system-reference.html exactly."""
+    NAVY       = RGBColor(0x11, 0x2C, 0x5C)   # Deep Navy — headlines, backgrounds
+    TEAL       = RGBColor(0x38, 0xBD, 0xAD)   # Teal — accent, highlights
+    DEEP_TEAL  = RGBColor(0x22, 0x82, 0x8F)   # Deep Teal — rules, depth
+    PRIMARY    = RGBColor(0x0E, 0x71, 0xF2)   # Primary Blue — CTAs, active
+    SKY        = RGBColor(0x82, 0xC9, 0xF0)   # Sky Blue — secondary series
+    AMBER      = RGBColor(0xFF, 0xC0, 0x00)   # Amber — warnings, attention
+    EMBER      = RGBColor(0xFF, 0x76, 0x00)   # Ember — caution states
     WHITE      = RGBColor(0xFF, 0xFF, 0xFF)
-    CHARCOAL   = RGBColor(0x2C, 0x3E, 0x50)   # Body text
-    LGREY      = RGBColor(0xF7, 0xF8, 0xFA)   # Slide backgrounds
-    MGREY      = RGBColor(0xE5, 0xE8, 0xEC)   # Dividers
-    SLATE      = RGBColor(0x8A, 0x99, 0xAA)   # Metadata, source notes
-    POSITIVE   = RGBColor(0x18, 0x7A, 0x4E)   # Green — above benchmark
-    NEGATIVE   = RGBColor(0xC0, 0x39, 0x2B)   # Red — below benchmark / risk
-    COVER_SUB  = RGBColor(0x8A, 0xA8, 0xC8)   # Cover subtitle text
+    INK        = RGBColor(0x0A, 0x16, 0x28)   # Ink — body text
+    LGREY      = RGBColor(0xF3, 0xF5, 0xF9)   # Mist — slide backgrounds
+    MGREY      = RGBColor(0xE8, 0xEB, 0xF0)   # Grid / dividers
+    SLATE      = RGBColor(0x5A, 0x64, 0x78)   # Ink Muted — metadata, source notes
+    POSITIVE   = RGBColor(0x38, 0xBD, 0xAD)   # Teal — above benchmark / positive
+    NEGATIVE   = RGBColor(0xEF, 0x40, 0x44)   # Signal Red — risk / negative
+    COVER_SUB  = RGBColor(0xB1, 0xBA, 0xD3)   # Navy Soft — cover subtitle text
 
 FONT = "Calibri"
 
