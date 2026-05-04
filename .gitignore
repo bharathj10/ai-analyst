@@ -1,22 +1,18 @@
+# Projects — project subdirectories stay local (data, scripts, outputs, READMEs)
+# Only the top-level projects/README.md (setup guidance) is tracked
+projects/*/
+
 # Data — never commit raw datasets or credentials
 data/*
 !data/.gitkeep
 !data/README.md
 data/reference/
 data/processed/
-projects/*/data/*
-!projects/*/data/.gitkeep
-!projects/*/data/README.md
-projects/*/data/reference/
-projects/*/data/processed/
 
 # Outputs — keep folder structure, ignore content
 outputs/*
 !outputs/.gitkeep
 !outputs/README.md
-projects/*/outputs/*
-!projects/*/outputs/.gitkeep
-!projects/*/outputs/README.md
 
 # Python
 __pycache__/
