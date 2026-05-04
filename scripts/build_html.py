@@ -618,7 +618,7 @@ def build_salary_sacrifice_html() -> None:
         title="The Age Gap Is a Participation Problem",
         subtitle="Salary Sacrifice Behaviour Across Age Bands — Q1 2026",
         organisation="Analytics & Insights",
-        prepared_by="Bharath",
+        prepared_by="Analytics & Insights",
         prepared_date="29 April 2026",
         source_note="Source: super_members_2026Q1.csv | n=5,000 members | Snapshot: 31 March 2026",
         dataset_path="data/super_members_clean.parquet",

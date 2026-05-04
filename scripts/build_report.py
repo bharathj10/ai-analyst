@@ -614,7 +614,7 @@ def build_salary_sacrifice_report() -> None:
         title="Salary Sacrifice Behaviour by Age Band",
         subtitle="Superannuation Member Analysis — Q1 2026",
         organisation="Analytics & Insights",
-        prepared_by="Bharath",
+        prepared_by="Analytics & Insights",
         prepared_date="29 April 2026",
         classification="CONFIDENTIAL — INTERNAL USE ONLY",
         data_source="super_members_2026Q1.csv",

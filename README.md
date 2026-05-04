@@ -13,20 +13,34 @@ ai-analyst/
 │   │   ├── analyst-orchestrator.md   # The brain — plans and delegates
 │   │   ├── data-fetcher.md           # Loads and profiles data
 │   │   ├── analyst.md                # Runs statistical analysis
+│   │   ├── super-specialist.md       # Retirement projections and fee modelling
 │   │   ├── visualiser.md             # Builds charts
-│   │   └── narrative-writer.md       # Writes the report
+│   │   ├── narrative-writer.md       # Writes the report
+│   │   ├── research-agent.md         # APRA/ASIC/ATO research
+│   │   ├── investment-analyst.md     # Investment performance attribution
+│   │   └── output-formatter.md       # Packages findings into PPTX/Word/Markdown
 │   ├── skills/             # Reusable capability packs
+│   │   ├── super-domain-knowledge/
 │   │   ├── data-profiling/
 │   │   ├── sql-query-builder/
 │   │   ├── chart-builder/
-│   │   └── insight-narrative/
+│   │   ├── insight-narrative/
+│   │   ├── benchmarking/
+│   │   ├── regulatory-context/
+│   │   ├── databricks/
+│   │   └── qa-analyst/
 │   └── commands/           # Slash commands
 │       ├── analyse.md      # /analyse <path> <question>
-│       └── profile.md      # /profile <path>
+│       ├── profile.md      # /profile <path>
+│       ├── adequacy.md     # /adequacy <path>
+│       ├── research.md     # /research <topic>
+│       ├── benchmark.md    # /benchmark <metric>
+│       ├── regulatory-check.md  # /regulatory-check <finding>
+│       └── format.md       # /format <findings-json>
 ├── data/                   # Input datasets (gitignored; do not commit PII)
 ├── outputs/                # Generated reports and charts (gitignored)
 ├── projects/               # Optional multi-project workspace
-├── scripts/                # Generated analysis scripts
+├── scripts/                # Analysis and output-building scripts
 ├── AGENTS.md               # Codex project instructions
 ├── CLAUDE.md               # Project context loaded every session
 └── requirements.txt
@@ -41,7 +55,7 @@ ai-analyst/
 
 2. **Clone and enter the project**:
    ```bash
-   git clone https://github.com/bharathj10/ai-analyst.git
+   git clone https://github.com/<your-username>/ai-analyst.git
    cd ai-analyst
    ```
 

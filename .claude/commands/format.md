@@ -1,31 +1,43 @@
 ---
-description: Convert analysis findings into a consultant-quality PPTX deck, Word report, and Markdown brief — all three output formats in one step
+description: Convert analysis findings into polished output formats — Interactive HTML, PPTX deck, Word report, and/or Markdown brief
 argument-hint: <findings JSON path or analysis topic>
 ---
 
-Use the `output-formatter` agent to package this analysis into polished deliverables.
+You're being asked to package existing analysis findings into formatted deliverables.
 
 **Input:** $ARGUMENTS
 
-The output-formatter will:
-1. Read the findings JSON and any associated charts (same date prefix in `outputs/`)
-2. Read the markdown report if one exists
-3. Build a `DeckConfig` and `ReportConfig` from the findings
-4. Run `scripts/build_deck.py` to produce a consultant-quality PPTX
-5. Run `scripts/build_report.py` to produce a Word report with premium formatting
-6. Save a concise Markdown brief alongside
+**Step 1 — Ask which formats are needed.**
+
+Before doing any work, present this choice:
+
+---
+Which output formats do you need?
+
+- **H** — Interactive HTML (standalone `.html` — best for emailing or sharing with execs)
+- **P** — PowerPoint deck (`.pptx` — for board meetings and presentations)
+- **W** — Word report (`.docx` — for formal or annotated documents)
+- **M** — Markdown brief (`.md` — for internal records)
+
+Reply with one or more letters (e.g. `HP` for HTML + PowerPoint, `HPW` for all formatted outputs).
+
+---
+
+Wait for the user's reply before proceeding.
+
+**Step 2 — Delegate to `output-formatter`.**
+
+Pass it:
+- The findings path from `$ARGUMENTS`
+- The confirmed format selection
+
+The output-formatter will produce only the requested formats using the parametric build scripts.
 
 **Design standards applied automatically:**
-- Every slide title is an action sentence stating the finding (not the topic)
-- Cover includes a bottom-line sentence — the single thing an exec reads first
-- Hero-number slide for the most important statistic
-- Action cards with specific metrics for recommendations
-- Running headers/footers with classification marking on Word doc
+- Every slide/section title states the finding (not the topic)
+- HTML includes interactive Plotly charts, KPI strip, and data quality summary
+- Cover and HTML header include a bottom-line sentence — the one thing an exec reads first
+- Action cards and recommendations carry specific metrics
 - Australian English, AUD formatting, DD/MM/YYYY dates throughout
 
-**Output files:**
-- `outputs/YYYY-MM-DD_<topic>_deck.pptx`
-- `outputs/YYYY-MM-DD_<topic>_report.docx`
-- `outputs/YYYY-MM-DD_<topic>_brief.md`
-
-When done, report the three output paths and confirm the slide count.
+When done, report the paths of all files produced.

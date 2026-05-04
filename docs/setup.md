@@ -1,8 +1,8 @@
 # How-To: Set Up an AI Analyst Project with Claude Code on Mac
 
-**Author:** Bharath
+**Author:** Analytics & Insights
 **Created:** April 2026
-**Last updated:** April 2026
+**Last updated:** May 2026
 **Purpose:** Step-by-step record of how to set up a Claude Code project (`ai-analyst`) so it can be repeated for future projects without re-figuring it out.
 
 ---
@@ -300,11 +300,11 @@ Numbering keeps them in a sensible reading order.
 
 ## Reuse pattern for future projects
 
-When I want to start a new Claude Code project (e.g., for Food Tie content tools):
+When I want to start a new Claude Code project (e.g., for a new team or domain):
 
 ```bash
 cd ~/Projects
-mkdir foodtie-content && cd foodtie-content
+mkdir new-project && cd new-project
 
 # Copy reusable Claude Code config
 cp -r ../ai-analyst/.claude .
@@ -324,7 +324,7 @@ pip install -r requirements.txt
 git init
 git add .
 git commit -m "Initial scaffold from ai-analyst template"
-gh repo create foodtie-content --private --source=. --push
+gh repo create new-project --private --source=. --push
 ```
 
 Skills like `chart-builder` and `insight-narrative` are reusable as-is. Agents are usually project-specific.

@@ -1,6 +1,6 @@
 # AI Analyst — Team Guide
 
-**Version:** 2.0 | **Maintained by:** Bharath (Analytics & Insights) | **Last updated:** May 2026
+**Version:** 2.0 | **Maintained by:** Analytics & Insights | **Last updated:** May 2026
 
 ---
 
@@ -52,7 +52,7 @@ The `.html` file is a single standalone file — email it, drop it in SharePoint
 | `/research <topic>` | Cited research brief from APRA, ASIC, ATO, industry sources | `/research "APRA performance test methodology"` |
 | `/benchmark <metric>` | Gap vs APRA industry medians, peer group, dollar impact | `/benchmark "our fund's 10yr net return of 8.1%"` |
 | `/regulatory-check <finding>` | Flags trustee/APRA/ASIC obligations triggered by a finding | `/regulatory-check "members with insurance premium >20% of employer contribution"` |
-| `/format <findings file>` | Converts analysis findings into PPTX + Word + Markdown | `/format outputs/2026-05-01_findings.json` |
+| `/format <findings file>` | Packages findings into chosen formats — asks which (HTML, PPTX, Word, Markdown) | `/format outputs/2026-05-01_findings.json` |
 
 ---
 

@@ -37,6 +37,8 @@ Think of it as a senior consulting team on demand: part actuary, part strategist
 | `visualiser` | Charts; financial-services style defaults; APRA benchmark lines |
 | `narrative-writer` | Board papers, trustee reports, investment committee memos |
 | `research-agent` | APRA/ASIC/ATO research; regulatory context; global comparisons |
+| `investment-analyst` | Investment performance attribution, benchmark comparison, APRA performance test |
+| `output-formatter` | Packages findings into selected formats — Interactive HTML, PPTX, Word, Markdown |
 
 ## Skill library
 
@@ -49,6 +51,8 @@ Think of it as a senior consulting team on demand: part actuary, part strategist
 | `insight-narrative` | Converting numbers to executive prose |
 | `chart-builder` | Chart type selection, matplotlib style defaults |
 | `sql-query-builder` | SQL against warehouses; CTE-first, dialect-aware |
+| `databricks` | Databricks/Unity Catalog connection patterns and SparkSQL dialect |
+| `qa-analyst` | QA checklist — verifies numbers, charts, regulatory claims before delivery |
 
 ## Slash commands
 
@@ -60,6 +64,7 @@ Think of it as a senior consulting team on demand: part actuary, part strategist
 | `/benchmark <metric>` | Gap analysis vs APRA medians + industry peer group |
 | `/regulatory-check <finding>` | Checks trustee/regulatory obligations triggered by a finding |
 | `/adequacy <dataset>` | Retirement adequacy assessment: projections, gaps, Age Pension |
+| `/format <findings-json>` | Packages findings into chosen formats — HTML, PPTX, Word, or Markdown (asks which) |
 
 ## Super-specific analytical question types
 
