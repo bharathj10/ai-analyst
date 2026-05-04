@@ -18,7 +18,7 @@ The system profiles the data, runs statistical analysis, builds charts, writes t
 
 | File | What it is |
 |---|---|
-| `outputs/YYYY-MM-DD_topic_interactive.html` | Standalone interactive report — **email this one** |
+| `outputs/YYYY-MM-DD_topic_interactive.html` | Standalone interactive report |
 | `outputs/YYYY-MM-DD_topic_deck.pptx` | Slide deck for board meetings |
 | `outputs/YYYY-MM-DD_topic_report.docx` | Word document for formal reports |
 | `outputs/YYYY-MM-DD_topic.md` | Written findings (internal record) |
@@ -32,7 +32,6 @@ The `.html` file is self-contained — no server, no login, works offline in any
 
 ### What you need before you start
 
-- A Mac (any recent model)
 - An [Anthropic account](https://claude.ai) — Pro plan or higher recommended
 - Terminal access: press `Cmd + Space`, type `Terminal`, press Enter
 
